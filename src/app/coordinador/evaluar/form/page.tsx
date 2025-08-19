@@ -1,5 +1,8 @@
 "use client";
-import { useMemo, useState } from "react";
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+import { Suspense, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,25 +16,34 @@ const PEDAGOGICAS: LikertQ[] = [
   { id: "pg-5", text: "Gestiona adecuadamente el tiempo de clase." },
 ];
 
-export default function EvaluarFormPage(){
+export default function Page() {
+  return (
+    <Suspense fallback={<main className="p-6">Cargando…</main>}>
+      <EvaluarFormInner />
+    </Suspense>
+  );
+}
+
+function EvaluarFormInner() {
   const params = useSearchParams();
   const router = useRouter();
   const prof = params.get("prof") || "";
-  const stepParam = parseInt(params.get("step") || "1", 10);
-  const step = stepParam === 1 ? 1 : 1;
-
   const [answers, setAnswers] = useState<Record<string, number>>({});
-  const canSubmit = useMemo(() => PEDAGOGICAS.every(q => (answers[q.id] ?? 0) >= 1 && (answers[q.id] ?? 0) <= 5), [answers]);
 
-  function setLikert(qid: string, n: number){
+  const canSubmit = useMemo(
+    () => PEDAGOGICAS.every(q => (answers[q.id] ?? 0) >= 1 && (answers[q.id] ?? 0) <= 5),
+    [answers]
+  );
+
+  function setLikert(qid: string, n: number) {
     setAnswers(a => ({ ...a, [qid]: n }));
   }
 
-  function handleSubmit(){
+  function handleSubmit() {
     router.push("/coordinador/gracias");
   }
 
-  if (!prof){
+  if (!prof) {
     return <main className="p-6">Falta el parámetro del profesor.</main>;
   }
 
@@ -49,14 +61,18 @@ export default function EvaluarFormPage(){
               <li key={q.id}>
                 <div className="mb-1 font-medium">{q.text}</div>
                 <div className="flex gap-2">
-                  {[1,2,3,4,5].map(n => (
+                  {[1, 2, 3, 4, 5].map(n => (
                     <button
                       key={n}
                       type="button"
                       onClick={() => setLikert(q.id, n)}
                       aria-pressed={answers[q.id] === n}
-                      className={`px-3 py-1 rounded-xl border text-sm ${answers[q.id] === n ? "bg-zinc-900 text-white" : "bg-white"}`}
-                    >{n}</button>
+                      className={`px-3 py-1 rounded-xl border text-sm ${
+                        answers[q.id] === n ? "bg-zinc-900 text-white" : "bg-white"
+                      }`}
+                    >
+                      {n}
+                    </button>
                   ))}
                 </div>
               </li>
@@ -64,8 +80,12 @@ export default function EvaluarFormPage(){
           </ol>
 
           <div className="pt-2 flex justify-end gap-3">
-            <Button variant="secondary" onClick={() => history.back()}>Cancelar</Button>
-            <Button onClick={handleSubmit} disabled={!canSubmit}>Enviar</Button>
+            <Button variant="secondary" onClick={() => history.back()}>
+              Cancelar
+            </Button>
+            <Button onClick={handleSubmit} disabled={!canSubmit}>
+              Enviar
+            </Button>
           </div>
         </CardContent>
       </Card>
