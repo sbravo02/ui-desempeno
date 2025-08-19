@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
+// 👉 Datos de demo (front-only)
 const assignments = [
   { id: "eva-1", teacher: "Profa. Daniela Ríos", subject: "Matemáticas", due: "2025-09-30" },
   { id: "eva-2", teacher: "Profa. Daniela Ríos", subject: "Ciencias",    due: "2025-10-05" },
