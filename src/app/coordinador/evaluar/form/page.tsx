@@ -28,15 +28,16 @@ function EvaluarFormInner() {
   const params = useSearchParams();
   const router = useRouter();
   const prof = params.get("prof") || "";
+
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
   const canSubmit = useMemo(
-    () => PEDAGOGICAS.every(q => (answers[q.id] ?? 0) >= 1 && (answers[q.id] ?? 0) <= 5),
+    () => PEDAGOGICAS.every((q) => (answers[q.id] ?? 0) >= 1 && (answers[q.id] ?? 0) <= 5),
     [answers]
   );
 
   function setLikert(qid: string, n: number) {
-    setAnswers(a => ({ ...a, [qid]: n }));
+    setAnswers((a) => ({ ...a, [qid]: n }));
   }
 
   function handleSubmit() {
@@ -57,11 +58,11 @@ function EvaluarFormInner() {
       <Card>
         <CardContent className="p-4 space-y-4">
           <ol className="space-y-3 list-decimal pl-6">
-            {PEDAGOGICAS.map(q => (
+            {PEDAGOGICAS.map((q) => (
               <li key={q.id}>
                 <div className="mb-1 font-medium">{q.text}</div>
                 <div className="flex gap-2">
-                  {[1, 2, 3, 4, 5].map(n => (
+                  {[1, 2, 3, 4, 5].map((n) => (
                     <button
                       key={n}
                       type="button"
